@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##### Libraries importation
 
-```{r}
+```{r, warning=FALSE}
 library(readr)
 library(readxl)
 library(ggplot2)
@@ -22,6 +22,7 @@ library(TSA)
 library(caschrono)
 library(tseries)
 library(fracdiff)
+library(keras)
 ```
 
 ## 1) Data Preprocessing: Clean and preprocess the data. This may involve handling missing values, converting timestamps, and normalizing or scaling the data.
@@ -133,20 +134,20 @@ can first apply a ARIMa model :
 arima_model <- auto.arima(db$Extent)
 summary(arima_model)
 ```
+```{r, warning=FALSE}
+residuals <- data.frame("Residuals" <- residuals(arima_model))
 
-SARIMA :
-```{r}
-sarima_model <- auto.arima(db$Extent, seasonal = TRUE)
-summary(sarima_model)
+# Check the normality of residuals
+ggplot(data=residuals) +
+  geom_histogram(aes(x=Residuals),bins = 200, color ="#6A7073") +
+  theme_bw() + xlim(-0.5, 0.5)
 ```
 
- Neural network :
 ```{r}
-library(keras)
 lstm_model <- keras_model_sequential() %>%
   layer_lstm(units = 50, input_shape = c(look_back, n_features)) %>%
   layer_dense(units = 1)
-
 ```
+
  
  
