@@ -49,20 +49,13 @@ We don't have any missing values so we can start our Exploratory Data Analysis.
 
 ## 2) Exploratory Data Analysis (EDA): Explore the data to understand its characteristics, identify trends, seasonality, and any potential anomalies or outliers.
 
-```{r}
-# transformation of the feature "Extent" to a time series object
-extent_ts <- ts(db$Extent, frequency = 1, start = c(db$Year, db$Month))
+Introduction to Exploratory Data Analysis (EDA). In this section, we perform an Exploratory Data Analysis (EDA) on the Sea Ice Index dataset. 
 
-# See the time series
-ggplot(data = db, aes(x = Date, y = Extent)) +
-  geom_line() +
-  labs(x = "Date", y = "Extent") +
-  ggtitle("time Series of Extent") +
-  theme_bw()
-```
-On this graph, we can see two major things. The first one is seasonality, 
+Our goal is to gain insights into the characteristics of the data, identify potential trends, seasonality patterns, and detect any anomalies or outliers. We start by visualizing the distribution of Sea Ice Extent through a histogram, providing an overview of the data's spread.
+
 
 ```{r}
+
 # Plotting the distribution of Sea Ice Extent
 ggplot(data = db, aes(x = Extent)) +
   geom_histogram(fill = "#6A7073", color = "black", alpha = 0.7, bins = 50) +
@@ -70,6 +63,90 @@ ggplot(data = db, aes(x = Extent)) +
        x = "Sea Ice Extent (Square Kilometers)",
        y = "Frequency") +
   theme_bw()
+```
+
+
+```{r}
+# transformation of the feature "Extent" to a time series object
+extent_ts <- ts(db$Extent, frequency = 12, start = c(db$Year[1], db$Month[1]))
+
+# See the time series
+gg_alltime <- ggplot(data = db, aes(x = Date, y = Extent)) +
+  geom_line() +
+  labs(x = "Date", y = "Extent") +
+  ggtitle("Time Series of Extent (all time)") +
+  theme_bw()
+
+gg_2020_2022 <- ggplot(data = db %>%
+  filter(Date >= as.Date("2020-01-01") & Date <= as.Date("2022-01-01")), aes(x = Date, y = Extent)) +
+  geom_line() +
+  labs(x = "Date", y = "Extent") +
+  ggtitle("Time Series of Extent 01/01/2020 - 01/01/2022") +
+  theme_bw()
+
+grid.arrange(gg_alltime, gg_2020_2022, ncol = 1)
+```
+
+By analyzing the time series of the "Extent" variable, noticeable patterns emerge. Firstly, a clear seasonality is evident, likely reflecting the seasonal variations between winter and summer. This observation aligns with expectations, given the seasonal nature of phenomena related to sea ice. Additionally, there is an overall decreasing trend from 1978 to the present day. This trend suggests a continuous decline in sea ice extent over the decades, a phenomenon that could be attributed to observed climate changes during this period.
+
+It's noteworthy to mention that upon scrutinizing the data, no anomalies or outliers were identified based on some threshold. This absence of anomalies suggests a relatively stable and predictable behavior within the sea ice extent time series. The forthcoming visualization of these decomposed components will further contribute to a comprehensive analysis of the temporal dynamics characterizing the sea ice extent over the examined period.
+
+
+## 3) Feature Engineering: Create relevant features that capture important information from the time series data. This could include statistical features, time-based features, or domain-specific features.
+
+
+Pour la question je serai bien aller chercher les données de température moyenne à la surface de la terre par jour sur google earth engine mais jsplus comment les sortir
+Sinon on peut sortir des caractéristiques Temporelles :
+```{r}
+db$Year <- lubridate::year(db$Date)
+db$Month <- lubridate::month(db$Date)
+db$DayOfWeek <- lubridate::wday(db$Date)
+db$Season <- ifelse(db$Month %in% c(12, 1, 2), "Winter", ifelse(db$Month %in% c(3, 4, 5), "Spring", ifelse(db$Month %in% c(6, 7, 8), "Summer", "Fall")))
 
 ```
 
+
+## 4) Model Selection: Choose an appropriate model for trend detection or anomaly detection. Common models include time series analysis techniques like moving averages or machine learning models for sequence data.
+
+Based on the autocorrelation function (ACF) and partial autocorrelation function (PACF) analyses for the sea ice extent time series:
+
+```{r}
+acf(extent_ts)
+```
+#### ACF Analysis:
+The ACF plot reveals a very strong and persistent autocorrelation with previous time points, which is expected given the nature of sea ice dynamics. A gradual decline in autocorrelation is observed, indicating a smooth decay in correlation as the time lag increases. This aligns with the notion that sea ice levels are unlikely to undergo abrupt changes from one day to the next. Specifically, at lag 3.5, there is an autocorrelation of approximately 0.65, suggesting a moderate positive correlation at this lag. The overall ACF pattern indicates a significant influence of past observations on the current sea ice extent.
+
+
+```{r}
+pacf(extent_ts)
+```
+
+#### PACF Analysis:
+Interpreting the PACF plot, the first bar is notably high and positive, indicative of a strong direct influence of the immediately preceding time point. Subsequent bars are negative and gradually decrease, with some entering the blue-shaded area after approximately lag 1.5. This pattern in the PACF suggests a potential autoregressive (AR) component of order 1, as the positive spike at lag 1 is indicative of a direct influence, and the subsequent negative spikes may represent the diminishing effect of intermediate lags. The entry into the blue-shaded area suggests a lack of significant partial autocorrelation beyond this point.
+
+In summary, the ACF and PACF analyses provide insights into the temporal dependencies within the sea ice extent time series. The strong autocorrelation in the ACF underscores the importance of considering lagged observations in modeling sea ice behavior. The PACF pattern hints at a potential autoregressive structure, with a notable influence from the immediate past, and diminishing effects for intermediate lags. These observations can guide the selection and parameterization of ARIMA or SARIMA models for further analysis and forecasting.
+
+For the modelling part :
+
+can first apply a ARIMa model :
+```{r}
+arima_model <- auto.arima(db$Extent)
+summary(arima_model)
+```
+
+SARIMA :
+```{r}
+sarima_model <- auto.arima(db$Extent, seasonal = TRUE)
+summary(sarima_model)
+```
+
+ Neural network :
+```{r}
+library(keras)
+lstm_model <- keras_model_sequential() %>%
+  layer_lstm(units = 50, input_shape = c(look_back, n_features)) %>%
+  layer_dense(units = 1)
+
+```
+ 
+ 
