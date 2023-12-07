@@ -2,9 +2,8 @@
 rm(list=ls())
 library(randomForest)
 library(caret)
+source("importation_datasets.R")
 
-# Import of the data we want to study
-evaporation <- read.csv("daily_Sum_Evap.csv")
 # Get ride of unwanted features
 evaporation <- evaporation[,-1]
 evaporation <- evaporation[,-3]

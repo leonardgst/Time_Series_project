@@ -14,47 +14,43 @@ library(TSA)
 library(tseries)
 library(caschrono)
 library(forecast)
-
-# We import the data that we have downloaded with python and google earth engine
 rm(list = ls())
-data4 <- read.csv("data_temperature_2013_2023.csv")
-data3 <- read.csv("data_temperature_2003_2013.csv")
-data2 <- read.csv("data_temperature_1993_2003.csv")
-data1 <- read.csv("data_temperature_1983_1993.csv")
+source("importation_datasets.R")
+
 
 # We're doing some preprocessing on the data to select only the important variables
-data <- rbind(data1, data2, data3, data4)
-data <- data %>% arrange(date)
-data$date <- as.Date(data$date, format="%Y-%m-%d")
-data <- data %>% select(-X)
-data <- data %>% select(-year)
-data <- data %>%
+data_temp <- rbind(data_temp1, data_temp2, data_temp3, data_temp4)
+data_temp <- data_temp %>% arrange(date)
+data_temp$date <- as.Date(data_temp$date, format="%Y-%m-%d")
+data_temp <- data_temp %>% select(-X)
+data_temp <- data_temp %>% select(-year)
+data_temp <- data_temp %>%
   mutate(year = lubridate::year(date),
          month = lubridate::month(date, label = FALSE))
 
-# Here we transform daily data to monthly data
-data <- data %>%
+# Here we transform daily data_temp to monthly data_temp
+data_temp <- data_temp %>%
   group_by(year, month) %>%
   summarise(temperature = mean(moyenne_temperature_celsius, na.rm = TRUE))
-data$date <- paste(data$year,data$month, sep = "-")
-data$date <- as.Date(paste0(data$date, "-1"), format="%Y-%m-%d")
+data_temp$date <- paste(data_temp$year,data_temp$month, sep = "-")
+data_temp$date <- as.Date(paste0(data_temp$date, "-1"), format="%Y-%m-%d")
 
 
 # We want to create lag for the previous day, the mean of the last 7 and 30 days and the same day one year ago
-data$lag1 <- lag(data$temperature, 1)
-data$lag2 <- lag(data$temperature, 2)
-data$lag3 <- lag(data$temperature, 3)
-data$lag4 <- lag(data$temperature, 4)
-data$lag5 <- lag(data$temperature, 5)
-data$lag6 <- lag(data$temperature, 6)
-data$lag12<- lag(data$temperature, 12)
+data_temp$lag1 <- lag(data_temp$temperature, 1)
+data_temp$lag2 <- lag(data_temp$temperature, 2)
+data_temp$lag3 <- lag(data_temp$temperature, 3)
+data_temp$lag4 <- lag(data_temp$temperature, 4)
+data_temp$lag5 <- lag(data_temp$temperature, 5)
+data_temp$lag6 <- lag(data_temp$temperature, 6)
+data_temp$lag12<- lag(data_temp$temperature, 12)
 
 # We want to retain only the non NA part ie we lose a year
-data <- data[13:490,]
+data_temp <- data_temp[13:490,]
 
 # Splitting the data into test and train samples
-train_data <- subset(data, year >= 1984 & year <= 2015)
-test_data <- subset(data, year >= 2016 & year <= 2022)
+train_data <- subset(data_temp, year >= 1984 & year <= 2015)
+test_data <- subset(data_temp, year >= 2016 & year <= 2022)
 test_data <- test_data[,-1]
 train_data <- train_data[,-1]
 

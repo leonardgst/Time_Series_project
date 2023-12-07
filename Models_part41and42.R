@@ -12,14 +12,12 @@ library(xgboost)
 library(randomForest)
 library(caret)
 library(gbm)
+source("importation_dataset.R")
 
 # Import of the data we want to study, evaporation
-full_data <- read.csv("daily_Sum_Evap.csv")
 full_data <- full_data[,-1]
 full_data <- full_data[,-3]
 full_data$date <- as.Date(full_data$date)
-
-liste_var = c("daily_Sum_Temp2M.csv")
 
 # Adding all variables to the features
 for (name_variable in liste_var) {
@@ -99,7 +97,6 @@ test_data <- subset(test_data, select = -which(names(test_data) %in% columns_to_
 columns_to_drop <- c("Temp2M")
 test_data <- subset(test_data, select = -which(names(test_data) %in% columns_to_drop))
 # Adding the new predicted temperature from the other sarima model
-y_pred_temp_sarima <- read.csv("y_pred_temp_sarima.csv")
 test_data <- cbind(test_data, "Temp2M" = y_pred_temp_sarima$x)
 # Changes the order of the columns, necessary for exogenous variables
 test_data <- test_data[, c("evaporation_from_open_water_surfaces_excluding_oceans_sum", "Temp2M", "month")]

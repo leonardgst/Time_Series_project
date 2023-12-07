@@ -6,10 +6,8 @@ library(ggplot2)
 library(forecast)
 library(tseries)
 library(lmtest)
+source("importation_dataset.R")
 
-
-# Import of the data we want to study
-evaporation <- read.csv("daily_Sum_Evap.csv")
 
 # Get ride of the two unwanted columns
 evaporation <- evaporation[,-1]

@@ -12,9 +12,10 @@ library(xgboost)
 library(randomForest)
 library(caret)
 library(gbm)
+source("importation_dataset.R")
+
 
 # Import of the data we want to study
-full_data <- read.csv("daily_Sum_Evap.csv")
 full_data <- full_data[,-1]
 full_data <- full_data[,-3]
 full_data$date <- as.Date(full_data$date)
