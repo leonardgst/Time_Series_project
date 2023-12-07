@@ -6,7 +6,7 @@ realms of agricultural management, drought prevention, and the overall preservat
 
 
 The scrutiny of surface water evaporation through the analysis of time series data proves to be an invaluable approach in capturing the nuances of this variable over time. Utilizing sequential data enables the identification of trends, seasonal cycles, and anomalies, providing a profound
-comprehension of fluctuations in surface water evaporation. This method also aids in highlighting intricate patterns that may be challenging to discern through point observations alone. By amalgamating the benefits of time series analysis with surface water evaporation data, we can
+comprehension of fluctuations in surface water evaporation. This method also aids in highlighting intricate patterns that may be challenging to discern through point observations alone. By amalgamating the benefits of time series analysis with surface water evaporation data, we can
 refine our predictive models and make informed decisions for sustainable water resource management, taking into account the temporal dynamics of this essential variable.
 
 
@@ -15,8 +15,7 @@ the intricate relationships between temperature and surface water evaporation. T
 
 
 The first phase of our project will entail a thorough exploratory analysis of the two variables in question. Moving into the second phase, we will strive to model these variables using time series and machine learning methodologies. At this juncture, we will leverage temperature variable
-predictions to evaluate their efficacy in early predictions of surface water evaporation. While we retain the option to incorporate other environmental variables, it is imperative to note that predictions pertaining to these variables will be observational, with the sole aim of understanding
-their impact on surface water evaporation.
+predictions to evaluate their efficacy in early predictions of surface water evaporation. While we retain the option to incorporate other environmental variables, it is imperative to note that predictions pertaining to these variables will be observational, with the sole aim of understanding their impact on surface water evaporation.
 
 
-The overarching objective remains the development of a robust tool capable of monitoring surface water evaporation, holding promising prospects for prevention and support in agricultural practices.
+The overarching objective remains the development of a robust tool capable of monitoring surface water evaporation, holding promising prospects for prevention and support in agricultural practices.
