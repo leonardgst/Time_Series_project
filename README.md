@@ -1,6 +1,6 @@
 # Time_Series_project
 
-The investigation into surface water evaporation assumes paramount importance in the context of environmental change. Understanding and monitoring this natural process are essential for anticipating and comprehending climate variations, thereby offering valuable insights into more
+  The investigation into surface water evaporation assumes paramount importance in the context of environmental change. Understanding and monitoring this natural process are essential for anticipating and comprehending climate variations, thereby offering valuable insights into more
 effective management of water resources. Examining surface water evaporation becomes a pivotal element in adapting strategies to mitigate environmental impacts, particularly within the
 realms of agricultural management, drought prevention, and the overall preservation of ecological balance.
 
